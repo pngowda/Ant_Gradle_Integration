@@ -1,0 +1,96 @@
+
+task sometask(dependsOn: ['Project1:firstTask','Project2:secondTask']){
+  //do something here
+}
+
+
+import org.apache.tools.ant.Project
+import org.apache.tools.ant.ProjectHelper
+import java.nio.file.Files
+
+def propertyMap=[keyA: 'valueA']
+def writePropMap=[keyB: 'valueB']
+def Map<Object,ArrayList<Object>> multiMap = new HashMap<Object,ArrayList<Object>>();
+def xmlFilePath='C:/Ant_Gradle_Int/build_input_output.xml'
+def inputFileList =new ArrayList()
+def targetList=new ArrayList()
+//def tempInputList=new ArrayList()
+//def tempOutputList=new ArrayList()
+def outputFileList =new ArrayList()
+def resolvedInputFileList =new ArrayList()
+def resolvedOutputFileList =new ArrayList()
+
+ant.importBuild('/build.xml'){ target -> 'second_ant_run-' + target }
+
+task readProperty() {
+    def antProject = new Project()
+    ProjectHelper.configureProject(antProject, file(xmlFilePath))
+    propertyMap = antProject.getProperties()
+    propertyMap.each { keyA, valueA -> writePropMap.put("\${" + "$keyA" + "}", "$valueA") }
+}
+
+task parseXml(dependsOn: 'readProperty') {
+    def parsedProjectXml = new XmlSlurper().parse(xmlFilePath)
+    def target_object=parsedProjectXml.depthFirst().findAll{
+        if(it.name()=='target'){
+            targetList.add(it.@name)
+        }
+    }
+    targetList.each {targeName->
+        def tempInputList=new ArrayList()
+        def tempOutputList=new ArrayList()
+        parsedProjectXml.depthFirst().find{
+            if(it.name()=='target'&& it.@name==targeName){
+               println " Ant Target: "+ targeName
+                it.input.file.each{
+                    filepath->
+                        def inPath=filepath.@path
+
+                        if(inPath.toString().contains("\$")){
+                            def toResolveString = inPath.toString().split("/").getAt(0)
+                            def resolvedPath = inPath.toString().replace(toResolveString, writePropMap.get(toResolveString))
+                            tempInputList.add(resolvedPath)
+                        }
+                }
+                println "\n**********Input*****************\n"
+                tempInputList.each {
+                    println it.toString()
+                }
+                it.output.file.each{
+                    filepath->
+                        def outPath=filepath.@path
+                        if(outPath.toString().contains("\$")){
+                            def toResolveString = outPath.toString().split("/").getAt(0)
+                            def resolvedPath = outPath.toString().replace(toResolveString, writePropMap.get(toResolveString))
+                            tempOutputList.add(resolvedPath)
+                        }
+                }
+                    println "\n**********Output****************\n"
+                tempOutputList.each {
+                    println it.toString()
+                }
+                println "********************************\n\n"
+                //tasks[''+targeName+''].inputs.files(tempInputList)
+                //tasks[''+targeName+''].outputs.files(tempOutputList)
+            }
+        }
+    }
+
+
+    parsedProjectXml.target.input.file.each { file -> inputFileList.add(file.@path) }
+    inputFileList.each {
+        if (it.toString().contains("\$")) {
+            def toResolveString = it.toString().split("/").getAt(0)
+            def resolvedPath = it.toString().replace(toResolveString, writePropMap.get(toResolveString))
+            resolvedInputFileList.add(resolvedPath)
+        }
+    }
+    parsedProjectXml.target.output.file.each { file -> outputFileList.add(file.@path) }
+    outputFileList.each {
+        if (it.toString().contains("\$")) {
+            def toResolveString = it.toString().split("/").getAt(0)
+            def resolvedPath = it.toString().replace(toResolveString, writePropMap.get(toResolveString))
+            resolvedOutputFileList.add(resolvedPath)
+        }
+    }
+}

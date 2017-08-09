@@ -1,0 +1,5 @@
+||:test
+java.lang.Object
+java.lang.System
+java.io.PrintStream
+test

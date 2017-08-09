@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Ant_Gradle_Int" default="mytarget" basedir=".">
+   <target name="mytarget">
+     <echo message="in mytarget 1"/>
+   </target>
+
+</project>

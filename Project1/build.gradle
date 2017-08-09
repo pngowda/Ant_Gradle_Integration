@@ -1,0 +1,18 @@
+import java.awt.List
+
+ant.importBuild('/build.xml') { target -> 'antbefore-' + target }
+def inputFileList=new ArrayList()
+def outputFileList=new ArrayList()
+
+
+inputFileList.add('C:/temp/input1')
+inputFileList.add('C:/temp/input2')
+
+outputFileList.add('C:/temp/output')
+
+tasks['antbefore-mytarget'].inputs.files(inputFileList)
+tasks['antbefore-mytarget'].outputs.files(outputFileList)
+
+task firstTask(dependsOn: 'antbefore-mytarget'){
+}
+

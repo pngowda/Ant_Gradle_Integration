@@ -1,0 +1,12 @@
+
+
+ant.importBuild('/Project1/build.xml') { target -> 'antbefore-' + target }
+ant.importBuild('/Project2/build.xml') { target -> 'antlater-' + target }
+
+task firstTask(dependsOn: 'antbefore-mytarget'){
+
+}
+
+task secondTask(dependsOn: 'antlater-mytarget'){
+
+}

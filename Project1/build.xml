@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Ant_Gradle_Int" default="start" basedir=".">
+  
+   <property name="javac.debug" value="true" />
+   <property name="src.dir" value="src" />
+   <property name="dist.dir" value="dist" />
+   <property name="classes.dir" value="classes" />
+   <property name="javadoc.dir" value="${dist.dir}/javadoc" />
+   <property name="mytarget.dir" value="C:\\temp\\mytarget"/>
+
+   <property name="jar.name" value="javaArrays.jar" />
+   <property name="jar.filesonly" value="true" />
+
+   <path id="classpath">
+   </path>
+
+   <target name="init" description="Running Init.">
+   <depend srcdir="${src.dir}"
+        destdir="${classes.dir}"
+        cache="depcache"
+        closure="yes"/>
+      <echo message="in Init target"/>
+      <mkdir dir="${classes.dir}" />
+      <mkdir dir="${dist.dir}" />
+   </target>
+
+   <target name="compile"
+           description="Compile the Java code."
+    depends="init">
+      <echo message="in Compile target"/>
+      <javac srcdir="${src.dir}"
+             destdir="${classes.dir}"
+      classpathref="classpath"
+      debug="${javac.debug}"
+      includeantruntime="false" />
+   </target>
+
+   <target name="jar"
+           description="Package compiled classes into JAR file"
+    depends="compile">
+      <echo message="in Jar target"/>
+      <jar destfile="${dist.dir}/${jar.name}"
+           basedir="${classes.dir}"
+           filesonly="${jar.filesonly}">
+      </jar>
+   </target>
+
+   <target name="start"
+           description="Compile Java source, assemble JAR, and generate documentation"
+    depends="jar, javadoc" >
+   <echo message="in Start target"/>
+   </target>
+
+   <target name="mytarget">
+     <echo message="in mytarget 1"/>
+   </target>
+
+   <target name="javadoc" description="Generate Javadoc-based documentation">
+      <echo message="in javadoc target"/>
+      <mkdir dir="${javadoc.dir}" />
+    </target>
+
+   <target name="clean" description="Remove generated artifacts."
+           depends="mytarget">
+
+      <delete dir="${classes.dir}" />
+      <delete dir="${dist.dir}" />
+   </target>
+
+</project>
