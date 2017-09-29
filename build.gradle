@@ -2,6 +2,7 @@
 task sometask(dependsOn: ['Project1:firstTask','Project2:secondTask']){
   //do something here
 }
+println "test"
 
 
 import org.apache.tools.ant.Project
