@@ -1,0 +1,36 @@
+node {
+	def jobName = env.JOB_NAME
+	def buildNumber = env.BUILD_NUMBER
+	def branchName = env.BRANCH_NAME
+	echo "Job: " + jobName
+	echo "Number: " + buildNumber
+	echo "Branch: " + branchName
+
+	def isWindowsPipeline = ~/.*Python_Lib_Windows.*/
+	def isLinuxPipeline = ~/.*Python_Lib_Linux.*/
+	
+	switch(jobName.toUpperCase()) {
+	  case isWindowsPipeline :
+	    echo "Running 'Python_Lib_Windows' pipeline..."
+		def pythonWinLib = load 'windows.groovy'
+		if(pythonWinLib == null) {
+			echo "Unable to load file 'windows.groovy'!"
+		} else {
+			pythonWinLib.buildOnWindows()
+		}
+		break;
+	  case isLinuxPipeline:
+	    echo "Running 'Python_Lib_Linux' pipeline..."
+		def pythonLinuxLib = load 'linux.groovy'
+		if(pythonLinuxLib == null) {
+			echo "Unable to load file 'linux.groovy'!"
+		} else {
+			pythonLinuxLib.buildOnLinux()
+		}
+		break;
+	  default:
+	    echo "Running 'Default' pipeline..."
+		break;
+	}
+}  
+
