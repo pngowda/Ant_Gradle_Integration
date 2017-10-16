@@ -1,6 +1,6 @@
 def buildOnWindows() {
 	timestamps {
-		node('windows') {
+		node('') {
 			def pythonUnitTest_1        =  ''
 			def pythonFunctionalTest_1  =  ''
 			def pythonFunctionalTest_2  =  ''
@@ -11,11 +11,11 @@ def buildOnWindows() {
 			setupEnvironment()
 			//printParams()
 			
-			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'XXXXXX',
+			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'test_id',
 		            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']])
 			{
 				stage ('Source Code Checkout'){ 
-					checkoutSource()
+					//checkoutSource()
 				}
 				stage ('Execute Unit-Test'){
 					try {

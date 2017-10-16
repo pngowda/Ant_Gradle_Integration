@@ -1,6 +1,6 @@
 def buildOnLinux() {
 	timestamps {
-		node('linux') {
+		node('') {
 			def pythonUnitTest_1        =  ''
 			def pythonFunctionalTest_1  =  ''
 			def pythonFunctionalTest_2  =  ''
@@ -8,14 +8,14 @@ def buildOnLinux() {
 			def pythonMainBuild         =  ''
 			def pythonDeploy            =  ''
 											
-			//setupEnvironment()
+			setupEnvironment()
 			//printParams()
 			
-			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'XXXXXX',
+			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'test_id',
 		            usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']])
 			{
 				stage ('Source Code Checkout'){ 
-					checkout scm
+					//checkoutSource()
 				}
 				stage ('Execute Unit-Test'){
 					try {
@@ -80,4 +80,3 @@ def checkoutSource() {
 }
 
 return this;
-
