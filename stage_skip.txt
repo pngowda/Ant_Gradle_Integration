@@ -1,0 +1,20 @@
+  
+  noDep=true
+  fullDep=true
+  
+  
+  if (fullDep){
+        stage('Checkout Code') {}
+        stage('Build') {}
+        stage('Build Docker Image') {}
+
+        stage('QA Deploy') {}
+        stage('QA Routing') {}
+
+        stage('Prod Deploy') {}
+     
+  }
+
+  if (noDep){
+    stage('Prod Routing') {}    
+  }
