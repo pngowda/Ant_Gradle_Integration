@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'org.sonatype.nexus.examples'
+version = '1.0.0'
+
+repositories {
+    maven {
+        url "http://gowda:9091/nexus/content/repositories/MyRepo/"
+    }
+}
+
+
+dependencies {
+    compile "org.sonatype.nexus.examples:simple-project:1.0.0-SNAPSHOT"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://gowda:9091/nexus/content/repositories/MyRepo/") {
+                authentication(userName: 'admin', password: 'admin123')
+            }
+        }
+    }
+}
+
+task wrapper( type: Wrapper, description: "create a gradlew" ) {
+  gradleVersion = '2.0'
+}
